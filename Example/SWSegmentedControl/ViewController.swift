@@ -17,6 +17,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        segmentedControl.font = UIFont.systemFontOfSize(20)
+        segmentedControl.unselectedFont = UIFont.systemFontOfSize(15)
         // Init with-out autolayout
         let sc = SWSegmentedControl(items: ["A", "B", "C"])
         sc.frame = CGRect(x: 0, y: 0, width: 300, height: 44)
@@ -40,7 +42,8 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activateConstraints(constraints2)
         
         let centerY = NSLayoutConstraint(item: sc2, attribute: .CenterY, relatedBy: .Equal, toItem: self.view, attribute: .CenterY, multiplier: 1, constant: 0)
-        self.view.addConstraint(centerY)        
+        self.view.addConstraint(centerY)
+        
     }
 
     @IBAction func didTapButton(sender: AnyObject) {

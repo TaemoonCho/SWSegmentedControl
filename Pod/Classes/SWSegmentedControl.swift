@@ -22,6 +22,12 @@ public class SWSegmentedControl: UIControl {
         }
     }
     
+    @IBInspectable public var unselectedFont: UIFont = UIFont.systemFontOfSize(UIFont.systemFontSize()) {
+        didSet {
+            self.configureView()
+        }
+    }
+    
     @IBInspectable public var titleColor: UIColor? {
         didSet {
             self.configureView()
@@ -124,12 +130,16 @@ public class SWSegmentedControl: UIControl {
         let yConstraint = NSLayoutConstraint(item: selectionIndicatorView, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1, constant: 0)
         self.addConstraint(yConstraint)
         
-        let wConstraint = NSLayoutConstraint(item: selectionIndicatorView, attribute: .Width, relatedBy: .Equal, toItem: self.wToItem, attribute: .Width, multiplier: 1, constant: 0)
-        self.addConstraint(wConstraint)
+//        let wConstraint = NSLayoutConstraint(item: selectionIndicatorView, attribute: .Width, relatedBy: .Equal, toItem: self.wToItem, attribute: .Width, multiplier: 1, constant: 0)
+//        self.addConstraint(wConstraint)
+//        self.addConstraint(wConstraint)
         
         let hConstraint = NSLayoutConstraint(item: selectionIndicatorView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: self.indicatorThickness)
         self.indicatorHeightConstraint = hConstraint
         self.addConstraint(hConstraint)
+        
+        let wConstraint = NSLayoutConstraint(item: selectionIndicatorView, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 64.0)
+        self.selectionIndicatorView.addConstraint(wConstraint)
     }
     
     private func initButtons() {
@@ -219,13 +229,17 @@ public class SWSegmentedControl: UIControl {
             return
         }
         
-        for button in buttons {
-            self.configureButton(button)
+        for (index, button) in buttons.enumerate() {
+            self.configureButton(button, isSelected: selectedSegmentIndex == index)
         }
     }
     
-    private func configureButton(button: UIButton) {
-        button.titleLabel?.font = self.font
+    private func configureButton(button: UIButton, isSelected: Bool = false) {
+        if isSelected {
+            button.titleLabel?.font = self.font
+        } else {
+            button.titleLabel?.font = self.unselectedFont
+        }
         button.setTitleColor(self.colorToUse(self.titleColor), forState: .Selected)
         button.setTitleColor(self.unselectedTitleColor, forState: .Normal)
 
@@ -236,8 +250,8 @@ public class SWSegmentedControl: UIControl {
         guard let index = self.buttons?.indexOf(button) else {
             return
         }
-        
         self.setSelectedSegmentIndex(index)
+        configureButtons()
         self.sendActionsForControlEvents(.ValueChanged)
     }
     
